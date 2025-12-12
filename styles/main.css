@@ -1,0 +1,264 @@
+/* ================================
+   BAN X CHAT - GLOBAL STYLE
+================================ */
+
+:root{
+  --bg:#f6f8fb;
+  --panel:#ffffff;
+  --accent:#0a84ff;
+  --accent2:#0077d9;
+  --muted:#7a8793;
+  --success:#26c281;
+  --shadow:0 8px 24px rgba(10,20,40,0.06);
+  --round:12px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;user-select:none;}
+body{
+  background:var(--bg);
+  font-family:"Poppins",sans-serif;
+  height:100vh;
+  overflow:hidden;
+}
+
+/* MAIN LAYOUT */
+.app{
+  display:grid;
+  grid-template-columns:320px 1fr 360px;
+  gap:12px;
+  padding:12px;
+  height:100vh;
+}
+
+/* GLASS EFFECT */
+.glass{
+  backdrop-filter:blur(16px);
+  background:rgba(255,255,255,0.55);
+  box-shadow:var(--shadow);
+  border-radius:var(--round);
+}
+
+/* ================================
+   SIDEBAR
+================================ */
+.sidebar{
+  background:var(--panel);
+  border-radius:var(--round);
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  box-shadow:var(--shadow);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding-bottom:12px;
+  border-bottom:1px solid #eef2f6;
+}
+
+.logo{
+  width:48px;
+  height:48px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#00d4ff,#0066ff);
+  color:white;
+  font-size:20px;
+  font-weight:800;
+}
+
+.search input{
+  width:100%;
+  margin-top:12px;
+  padding:10px 14px;
+  border-radius:12px;
+  border:1px solid #d7e1ea;
+  outline:none;
+  font-size:14px;
+}
+
+.list{
+  margin-top:12px;
+  overflow:auto;
+  flex:1;
+}
+
+.item{
+  padding:12px;
+  border-radius:12px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.item:hover{ background:#eef6ff; }
+
+.avatar img{
+  width:48px;height:48px;
+  border-radius:50%;
+}
+
+.online{
+  position:absolute;
+  width:14px;height:14px;
+  background:var(--success);
+  border-radius:50%;
+  bottom:0;right:0;
+  border:2px solid white;
+}
+
+/* ================================
+   CHAT PANEL
+================================ */
+
+.chat-panel{
+  background:var(--panel);
+  border-radius:var(--round);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+
+.top{
+  padding:14px 18px;
+  display:flex;
+  align-items:center;
+  border-bottom:1px solid #eef2f6;
+}
+
+.top-right .icon{
+  width:36px;height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+  background:#eef2f6;
+  cursor:pointer;
+}
+
+.main{
+  flex:1;
+  padding:20px;
+  overflow:auto;
+  background-size:cover;
+  background-position:center;
+}
+
+/* Message bubbles */
+.msg{
+  max-width:70%;
+  padding:10px 14px;
+  border-radius:14px;
+  margin-bottom:12px;
+  position:relative;
+  word-wrap:break-word;
+  font-size:15px;
+}
+
+.msg.me{
+  margin-left:auto;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white;
+}
+
+.msg.other{
+  background:white;
+  border:1px solid #e9eef3;
+}
+
+.time{
+  font-size:11px;
+  opacity:0.7;
+  margin-top:6px;
+}
+
+/* ================================
+   ACTION BAR
+================================ */
+
+.action-bar{
+  padding:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  border-top:1px solid #eef2f6;
+}
+
+.input{
+  flex:1;
+  background:white;
+  border-radius:999px;
+  border:1px solid #d7e1ea;
+  padding:8px 14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.input input{
+  flex:1;
+  font-size:15px;
+  border:none;
+  outline:none;
+}
+
+.btn{
+  padding:10px 16px;
+  border-radius:12px;
+  border:0;
+  background:var(--accent);
+  color:white;
+  font-weight:600;
+}
+
+/* ================================
+   RIGHT INFO PANEL
+================================ */
+
+.info{
+  background:var(--panel);
+  border-radius:var(--round);
+  box-shadow:var(--shadow);
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.info .section{
+  background:#f2f7ff;
+  padding:12px;
+  border-radius:12px;
+}
+
+/* ================================
+   REACTION POPUP
+================================ */
+
+.react-popup{
+  position:fixed;
+  padding:8px 12px;
+  display:flex;
+  gap:12px;
+  background:white;
+  border-radius:999px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.15);
+}
+
+/* ================================
+   Mobile Responsive
+================================ */
+
+@media(max-width:900px){
+  .app{
+    grid-template-columns:1fr;
+  }
+  .info{ display:none; }
+}
