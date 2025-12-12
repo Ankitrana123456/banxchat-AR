@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: banxchat-forwarder
+    env: node
+    plan: free
+    buildCommand: "npm install"
+    startCommand: "node bot-forwarder.js"
+    envVars:
+      - key: BOT_TOKEN
+        value: ""
+      - key: BOT_CHAT_ID
+        value: ""
