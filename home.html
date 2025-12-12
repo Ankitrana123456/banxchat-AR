@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BAN X CHAT — Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fb; --panel:#ffffff; --accent:#0a84ff; --muted:#7a8793; --success:#26c281;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Poppins",sans-serif;background:var(--bg);height:100vh;overflow:hidden;color:#122}
+.app{display:grid;grid-template-columns:320px 1fr 360px;gap:12px;padding:12px;height:100vh}
+.sidebar{background:var(--panel);border-radius:12px;padding:12px;box-shadow:0 8px 24px rgba(10,20,40,0.06);display:flex;flex-direction:column;}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#00d4ff,#0066ff);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+.search{margin-top:12px}
+.search input{width:100%;padding:10px;border-radius:10px;border:1px solid #e6edf3}
+.section-title{font-weight:700;margin-top:12px;margin-bottom:6px}
+.list{overflow:auto;flex:1;margin-top:6px}
+.item{display:flex;gap:10px;padding:10px;border-radius:10px;align-items:center;cursor:pointer}
+.item:hover{background:#f2f7ff}
+.avatar{width:48px;height:48px;border-radius:50%;position:relative}
+.online{position:absolute;right:0;bottom:0;width:12px;height:12px;border-radius:50%;border:2px solid var(--panel);background:var(--success)}
+.meta{flex:1}
+.title{font-weight:600}
+.sub{font-size:13px;color:var(--muted);margin-top:6px}
+.badge{background:#ff3b30;color:#fff;padding:4px 8px;border-radius:999px;font-size:12px}
+
+.chat-panel{background:var(--panel);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 24px rgba(10,20,40,0.06)}
+.top{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid #eef2f6}
+.top-left{display:flex;align-items:center;gap:12px}
+.top-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.top-avatar{width:44px;height:44px;border-radius:50%}
+.top-name{font-weight:700}
+.top-status{font-size:13px;color:var(--muted);margin-top:4px}
+
+.main{flex:1;overflow:auto;padding:18px;background-size:cover;background-position:center}
+.date-sep{display:flex;align-items:center;gap:10px;justify-content:center;margin:10px 0;color:var(--muted);font-size:13px}
+.msg{max-width:70%;padding:10px 12px;border-radius:12px;margin-bottom:10px;position:relative;word-wrap:break-word}
+.msg.me{margin-left:auto;background:linear-gradient(90deg,var(--accent),#0077d9);color:#fff}
+.msg.other{background:#fff;border:1px solid #eef2f6}
+.msg .time{display:block;font-size:11px;color:var(--muted);margin-top:6px}
+.action-bar{display:flex;gap:8px;align-items:center;padding:10px;border-top:1px solid #eef2f6}
+.input{flex:1;padding:10px;border-radius:999px;border:1px solid #e6edf3;background:#fff;display:flex;align-items:center;gap:8px}
+.input input{flex:1;border:0;outline:none;padding:6px}
+.btn{padding:8px 12px;border-radius:10px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+.icon{width:36px;height:36px;border-radius:8px;background:rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+.info{background:var(--panel);border-radius:12px;padding:12px;box-shadow:0 8px 24px rgba(10,20,40,0.06);display:flex;flex-direction:column;gap:12px}
+.info .section{background:#f7fbff;padding:10px;border-radius:8px}
+.info img{width:72px;height:72px;border-radius:10px}
+
+.footer-note{font-size:12px;color:var(--muted);text-align:center;margin-top:6px}
+
+/* reaction popup */
+.react-popup{position:fixed;display:flex;gap:8px;padding:8px;border-radius:999px;background:#fff;box-shadow:0 6px 18px rgba(10,20,40,0.12)}
+.react-emoji{font-size:22px;cursor:pointer;padding:6px}
+
+/* small screens */
+@media (max-width:900px){
+  .app{grid-template-columns:1fr;padding:8px}
+  .info{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- LEFT: contacts -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">BX</div>
+      <div>
+        <div style="font-weight:700">BAN X CHAT</div>
+        <div style="font-size:12px;color:var(--muted)">Premium • Live</div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <div class="icon" id="newGroupBtn" title="New Group">＋</div>
+        <div class="icon" id="menuBtn" title="Menu">☰</div>
+      </div>
+    </div>
+
+    <div class="search"><input id="searchInput" placeholder="Search users or messages..."></div>
+
+    <div class="section-title">Chats <span style="float:right;color:var(--muted);font-size:13px" id="onlineCount">0 online</span></div>
+    <div class="list" id="usersList"></div>
+  </aside>
+
+  <!-- CENTER: chat -->
+  <section class="chat-panel">
+    <div class="top">
+      <div class="top-left">
+        <img id="topAvatar" class="top-avatar" src="" alt="">
+        <div>
+          <div id="topName" class="top-name">Select conversation</div>
+          <div id="topStatus" class="top-status">Open or start a chat</div>
+        </div>
+      </div>
+      <div class="top-right">
+        <div class="icon" id="pinBtn" title="Pin">📌</div>
+        <div class="icon" id="callBtn" title="Audio">📞</div>
+        <div class="icon" id="videoBtn" title="Video">🎥</div>
+        <div class="icon" id="moreBtn" title="More">⋯</div>
+      </div>
+    </div>
+
+    <div id="chatMain" class="main"></div>
+
+    <div id="seenLine" style="padding:6px 12px;font-size:12px;color:var(--muted);text-align:right"></div>
+
+    <div class="action-bar">
+      <div class="input">
+        <input id="msgInput" placeholder="Message...">
+        <input type="file" id="filePicker" style="display:none"/>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div class="icon" id="attachBtn">📎</div>
+        <button id="sendBtn" class="btn">Send</button>
+        <button id="exportBtn" class="btn" style="background:#222">Export</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RIGHT: info -->
+  <aside class="info">
+    <div style="display:flex;gap:12px;align-items:center">
+      <img id="infoAvatar" src="https://i.imgur.com/8Km9tLL.png">
+      <div>
+        <div id="infoName" style="font-weight:700">User</div>
+        <div id="infoEmail" style="color:var(--muted)">email</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div style="font-weight:600">Shared Media</div>
+      <div id="sharedMedia" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+    </div>
+
+    <div class="section">
+      <div style="font-weight:600">Chat Background</div>
+      <input id="bgUrl" placeholder="Paste bg image URL" style="width:100%;padding:8px;border-radius:8px;border:1px solid #eaeff5;margin-top:8px">
+      <button id="setBgBtn" class="btn" style="margin-top:8px">Set Background</button>
+    </div>
+
+    <div class="section">
+      <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:600">Music</div><div style="font-size:12px;color:var(--muted)">Only you hear</div></div>
+      <input id="musicPicker" type="file" accept="audio/*" style="margin-top:8px">
+      <div style="margin-top:8px"><button id="playMusic" class="btn">Play / Stop</button></div>
+    </div>
+
+    <div class="footer-note">Official channel: <b>BAN X CHAT Official</b></div>
+  </aside>
+</div>
+
+<!-- reaction popup container -->
+<div id="reactPopup" class="react-popup" style="display:none">
+  <div class="react-emoji">👍</div>
+  <div class="react-emoji">❤️</div>
+  <div class="react-emoji">😂</div>
+  <div class="react-emoji">🔥</div>
+  <div class="react-emoji">😮</div>
+  <div class="react-emoji">😢</div>
+</div>
+
+<!-- Firebase compat -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+<!-- Your firebase-config.js should initialize firebase (compat) and set FIREBASE_CONFIG -->
+<script src="firebase-config.js"></script>
+
+<script>
+/* ===========================================================
+  Advanced home.html (safe version)
+  - Reactions, forward, export, groups, official channel auto-join
+  - Uses Firebase compat SDK
+  - Requires firebase-config.js present & initialized
+  =========================================================== */
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+/* CONFIG: set your forwarder URL here (deployed bot-forwarder) */
+const EXPORT_FORWARDER_URL = 'https://your-forwarder.example.com/export'; // <-- replace after deploy
+
+/* STATE */
+let me = null;
+let users = [];
+let currentConvo = null; // { id, type: 'user'|'group'|'channel', other: { uid/name } }
+let msgsUnsub = null;
+let audioPlayer = null;
+let myMusicUrl = null;
+
+/* UI refs */
+const usersListEl = document.getElementById('usersList');
+const searchInput = document.getElementById('searchInput');
+const chatMain = document.getElementById('chatMain');
+const topName = document.getElementById('topName');
+const topAvatar = document.getElementById('topAvatar');
+const topStatus = document.getElementById('topStatus');
+const infoName = document.getElementById('infoName');
+const infoEmail = document.getElementById('infoEmail');
+const infoAvatar = document.getElementById('infoAvatar');
+const sharedMedia = document.getElementById('sharedMedia');
+const sendBtn = document.getElementById('sendBtn');
+const msgInput = document.getElementById('msgInput');
+const attachBtn = document.getElementById('attachBtn');
+const filePicker = document.getElementById('filePicker');
+const exportBtn = document.getElementById('exportBtn');
+const reactPopup = document.getElementById('reactPopup');
+const musicPicker = document.getElementById('musicPicker');
+const playMusic = document.getElementById('playMusic');
+const setBgBtn = document.getElementById('setBgBtn');
+const bgUrlInput = document.getElementById('bgUrl');
+const newGroupBtn = document.getElementById('newGroupBtn');
+
+/* AUTH flow */
+auth.onAuthStateChanged(async user => {
+  if(!user) return location.href='index.html';
+  me = { uid: user.uid, name: user.displayName, email: user.email, photo: user.photoURL };
+  // create user doc and auto-join official channel
+  await db.collection('users').doc(me.uid).set({ name:me.name, email:me.email, photo:me.photo, online:true, joinedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:true });
+  await db.collection('channels').doc('official').collection('members').doc(me.uid).set({ joinedAt: Date.now() });
+  loadUsers();
+  loadMyMusic();
+  updateInfoPanel();
+});
+
+/* load users list */
+function loadUsers(){
+  db.collection('users').onSnapshot(snap=>{
+    users = [];
+    snap.forEach(d => users.push({ uid: d.id, ...d.data() }));
+    renderUsers(users);
+  });
+}
+
+/* render users */
+function renderUsers(list){
+  usersListEl.innerHTML='';
+  list.filter(u => u.uid !== me.uid).sort((a,b)=>a.name.localeCompare(b.name)).forEach(u=>{
+    const el = document.createElement('div');
+    el.className='item';
+    el.innerHTML = `<div class="avatar"><img src="${u.photo||'https://i.imgur.com/8Km9tLL.png'}" style="width:48px;height:48px;border-radius:50%"></div>
+                    <div class="meta"><div class="title">${u.name}</div><div class="sub">${u.online ? 'Online' : 'Offline'}</div></div>`;
+    el.onclick = ()=> openDirect(u);
+    usersListEl.appendChild(el);
+  });
+  document.getElementById('onlineCount').innerText = list.filter(u=>u.online).length;
+}
+
+/* open direct convo */
+async function openDirect(user){
+  // unsubscribe previous
+  if(msgsUnsub) msgsUnsub();
+  currentConvo = { id: convoId(me.uid, user.uid), type:'user', other:user };
+  topName.innerText = user.name;
+  topAvatar.src = user.photo || 'https://i.imgur.com/8Km9tLL.png';
+  topStatus.innerText = user.online ? 'Online' : 'Offline';
+  chatMain.innerHTML='';
+  infoName.innerText = user.name; infoEmail.innerText = user.email || ''; infoAvatar.src = user.photo || 'https://i.imgur.com/8Km9tLL.png';
+  // listen convo bg
+  db.collection('convos').doc(currentConvo.id).onSnapshot(doc => {
+    const data = doc.data() || {};
+    chatMain.style.backgroundImage = data.bgUrl ? `url(${data.bgUrl})` : '';
+  });
+  // subscribe messages
+  const ref = db.collection('convos').doc(currentConvo.id).collection('msgs').orderBy('ts','asc');
+  msgsUnsub = ref.onSnapshot(snapshot=>{
+    snapshot.docChanges().forEach(ch=>{
+      if(ch.type === 'added'){ renderMessage(ch.doc.id, ch.doc.data()); }
+      if(ch.type === 'modified'){ /* update reactions/seen UI if needed */ }
+    });
+  });
+  // mark as read / set seen meta
+  await db.collection('convos').doc(currentConvo.id).collection('meta').doc('seen_'+me.uid).set({ seenAt: Date.now() });
+  loadSharedMedia(currentConvo.id);
+}
+
+/* helpers */
+function convoId(a,b){ return [a,b].sort().join('|'); }
+function formatTime(ts){ const d=new Date(ts); return d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) }
+
+/* render message */
+function renderMessage(id, m){
+  const el = document.createElement('div');
+  el.className = 'msg ' + (m.from === me.uid ? 'me' : 'other');
+  el.dataset.msgId = id;
+  if(m.type === 'image'){
+    const img = document.createElement('img'); img.src = m.fileUrl; img.style.maxWidth='320px'; img.style.borderRadius='8px';
+    el.appendChild(img);
+  } else if(m.type === 'forward'){
+    const f = document.createElement('div'); f.style.fontSize='13px'; f.style.color= 'var(--muted)';
+    f.innerText = `Forwarded from ${m.forwardFrom || 'unknown'}`;
+    el.appendChild(f);
+    const t = document.createElement('div'); t.innerText = m.text; el.appendChild(t);
+  } else {
+    el.innerText = m.text;
+  }
+  const meta = document.createElement('div'); meta.className='time'; meta.innerText = formatTime(m.ts || Date.now());
+  el.appendChild(meta);
+
+  // reactions display
+  if(m.reactions){
+    const rbar = document.createElement('div'); rbar.style.marginTop='6px';
+    for(const [uid,emoji] of Object.entries(m.reactions)){
+      const span = document.createElement('span'); span.innerText = emoji; span.style.marginRight='6px'; rbar.appendChild(span);
+    }
+    el.appendChild(rbar);
+  }
+
+  // long press for reactions & forward
+  el.addEventListener('contextmenu', e => { e.preventDefault(); openReactPopup(e.pageX, e.pageY, id); });
+
+  chatMain.appendChild(el);
+  chatMain.scrollTop = chatMain.scrollHeight;
+}
+
+/* send message */
+sendBtn.addEventListener('click', async ()=>{
+  if(!currentConvo) return alert('Open a chat first');
+  const text = msgInput.value.trim(); if(!text) return;
+  const ref = db.collection('convos').doc(currentConvo.id).collection('msgs');
+  await ref.add({ from: me.uid, to: currentConvo.other.uid, text, ts: Date.now(), type:'text', seen:false });
+  msgInput.value='';
+});
+
+/* attach/upload */
+attachBtn && attachBtn.addEventListener('click', ()=> filePicker.click());
+filePicker && filePicker.addEventListener('change', async e=>{
+  const f = e.target.files[0]; if(!f) return;
+  if(!currentConvo) return alert('Open a chat first');
+  const path = `files/${me.uid}/${Date.now()}_${f.name}`;
+  const ref = storage.ref(path);
+  const task = ref.put(f);
+  task.on('state_changed', null, err=>alert(err.message), async ()=>{
+    const url = await ref.getDownloadURL();
+    await db.collection('convos').doc(currentConvo.id).collection('msgs').add({ from:me.uid, to:currentConvo.other.uid, text:f.name, fileUrl:url, type: f.type.startsWith('image/') ? 'image' : 'file', ts: Date.now(), seen:false });
+  });
+});
+
+/* reactions */
+function openReactPopup(x,y,msgId){
+  reactPopup.style.left = (x - 120) + 'px';
+  reactPopup.style.top = (y - 60) + 'px';
+  reactPopup.style.display = 'flex';
+  // attach handlers
+  Array.from(reactPopup.querySelectorAll('.react-emoji')).forEach(node=>{
+    node.onclick = async ()=>{
+      const emoji = node.innerText;
+      const msgRef = db.collection('convos').doc(currentConvo.id).collection('msgs').doc(msgId);
+      await msgRef.set({ reactions: { [me.uid]: emoji } }, { merge:true }); // merges; for multi-user merge logic might need to fetch and update
+      reactPopup.style.display='none';
+    };
+  });
+  setTimeout(()=> { if(reactPopup.style.display==='flex') document.addEventListener('click', ()=> reactPopup.style.display='none', { once: true }); }, 10);
+}
+
+/* forward message (example usage via prompt) */
+async function forwardMessage(msgId){
+  const targetName = prompt('Type recipient name to forward to:');
+  if(!targetName) return;
+  const target = users.find(u=>u.name === targetName);
+  if(!target) return alert('User not found');
+  // fetch original message
+  const doc = await db.collection('convos').doc(currentConvo.id).collection('msgs').doc(msgId).get();
+  if(!doc.exists) return alert('Message not found');
+  const data = doc.data();
+  const conv2 = convoId(me.uid, target.uid);
+  await db.collection('convos').doc(conv2).collection('msgs').add({ from: me.uid, to: target.uid, text: data.text, type:'forward', forwardFrom: (data.from===me.uid? me.name : 'Other'), ts: Date.now(), seen:false });
+  alert('Forwarded');
+}
+
+/* export chat and send to bot */
+exportBtn.addEventListener('click', async ()=>{
+  if(!currentConvo) return alert('Open a chat first');
+  const convo = currentConvo.id;
+  // call client helper (function provided in docs / export-bot.js)
+  exportChatAndSendToBot(convo, EXPORT_FORWARDER_URL);
+});
+
+/* export helper available from export-bot.js (include in repo). */
+
+/* set background */
+setBgBtn.addEventListener('click', async ()=>{
+  const url = bgUrlInput.value.trim(); if(!url || !currentConvo) return alert('Enter URL & open a chat');
+  await db.collection('convos').doc(currentConvo.id).set({ bgUrl: url }, { merge:true });
+  alert('Background set');
+});
+
+/* music upload and play (only you hear) */
+musicPicker.addEventListener('change', async e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const path = `music/${me.uid}/${Date.now()}_${f.name}`;
+  const ref = storage.ref(path);
+  const task = ref.put(f);
+  task.on('state_changed', null, err=>alert(err.message), async ()=>{
+    const url = await ref.getDownloadURL();
+    await db.collection('users').doc(me.uid).update({ musicUrl: url });
+    myMusicUrl = url; playLocalMusic(url);
+    alert('Music uploaded; only you will hear it when logged in.');
+  });
+});
+playMusic.addEventListener('click', ()=>{
+  if(!myMusicUrl) return alert('Upload music first');
+  if(audioPlayer){ audioPlayer.pause(); audioPlayer=null; playMusic.innerText='Play / Stop' }
+  else { playLocalMusic(myMusicUrl); playMusic.innerText='Stop' }
+});
+function playLocalMusic(url){ if(audioPlayer){ audioPlayer.pause(); audioPlayer=null; } audioPlayer = new Audio(url); audioPlayer.loop=true; audioPlayer.volume=0.6; audioPlayer.play().catch(()=>console.log('autoplay blocked')) }
+
+/* load my music (on login) */
+async function loadMyMusic(){
+  const doc = await db.collection('users').doc(me.uid).get();
+  if(doc.exists && doc.data().musicUrl) myMusicUrl = doc.data().musicUrl;
+}
+
+/* shared media load (for info panel) */
+async function loadSharedMedia(convoId){
+  const snap = await db.collection('convos').doc(convoId).collection('msgs').where('type','==','image').orderBy('ts','desc').limit(12).get();
+  sharedMedia.innerHTML=''; snap.forEach(s=>{ const d=s.data(); const img=document.createElement('img'); img.src=d.fileUrl; img.style.width='80px'; img.style.height='80px'; img.style.objectFit='cover'; img.style.borderRadius='8px'; sharedMedia.appendChild(img); });
+}
+
+/* new group creation prompt (simple) */
+newGroupBtn.addEventListener('click', async ()=>{
+  const name = prompt('Group name:'); if(!name) return;
+  const membersRaw = prompt('Add members by name (comma separated):'); const members = (membersRaw||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const memberDocs = users.filter(u=> members.includes(u.name)).map(u=>u.uid);
+  if(!memberDocs.length) return alert('No valid members found');
+  memberDocs.push(me.uid);
+  const gdoc = await db.collection('groups').add({ name, adminUid: me.uid, members: memberDocs, createdAt: Date.now() });
+  alert('Group created: ' + name);
+});
+
+/* utility: update info panel */
+function updateInfoPanel(){ infoName.innerText = me.name; infoEmail.innerText = me.email || ''; infoAvatar.src = me.photo || 'https://i.imgur.com/8Km9tLL.png'; }
+
+/* listening search */
+searchInput.addEventListener('input', ()=> {
+  const q = searchInput.value.trim().toLowerCase();
+  if(!q) return renderUsers(users);
+  renderUsers(users.filter(u=>u.name.toLowerCase().includes(q)));
+});
+
+/* on unload mark offline */
+window.addEventListener('beforeunload', async ()=> { if(me) await db.collection('users').doc(me.uid).update({ online:false, lastSeen: firebase.firestore.FieldValue.serverTimestamp() }) });
+
+/* basic helpers for forward/reaction UI omitted (use provided functions) */
+
+</script>
+<script src="export-bot.js"></script>
+</body>
+  </html>
