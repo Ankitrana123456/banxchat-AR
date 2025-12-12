@@ -1,0 +1,13 @@
+# render.yaml - Deploy Node bot-forwarder
+services:
+  - type: web
+    name: banxchat-forwarder
+    env: node
+    plan: free
+    buildCommand: "npm install"
+    startCommand: "node bot-forwarder.js"
+    envVars:
+      - key: BOT_TOKEN
+        value: ""   # set in Render dashboard
+      - key: BOT_CHAT_ID
+        value: ""   # set in Render dashboard
