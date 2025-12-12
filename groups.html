@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Groups</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"></head>
+<body style="font-family:Poppins;margin:12px">
+<h2>Create Group</h2>
+<label>Group name</label><br/><input id="gname"><br/>
+<label>Members (comma separated usernames)</label><br/><input id="members"><br/><button id="createBtn">Create</button>
+<div id="out"></div>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+const auth=firebase.auth(), db=firebase.firestore();
+auth.onAuthStateChanged(u=>{ if(!u) location.href='index.html'; });
+document.getElementById('createBtn').addEventListener('click', async ()=>{
+  const name = document.getElementById('gname').value.trim();
+  const membersTxt = document.getElementById('members').value.trim();
+  if(!name || !membersTxt) return alert('fill');
+  const names = membersTxt.split(',').map(s=>s.trim());
+  // resolve names to uids
+  const usersSnap = await db.collection('users').where('name','in', names).get();
+  const uids = usersSnap.docs.map(d=>d.id);
+  uids.push(firebase.auth().currentUser.uid);
+  const g = await db.collection('groups').add({ name, adminUid: firebase.auth().currentUser.uid, members: uids, createdAt: Date.now() });
+  document.getElementById('out').innerText = 'Created: ' + g.id;
+});
+</script>
+</body>
+</html>
