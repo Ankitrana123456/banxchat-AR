@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "home.html", "use": "@vercel/static" },
+    { "src": "admin.html", "use": "@vercel/static" },
+    { "src": "groups.html", "use": "@vercel/static" },
+    { "src": "firebase-config.js", "use": "@vercel/static" },
+    { "src": "styles/**/*.css", "use": "@vercel/static" },
+    { "src": "assets/**/*", "use": "@vercel/static" }
+  ]
+}
