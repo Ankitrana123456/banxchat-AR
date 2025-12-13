@@ -2,28 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BENX CHAT – FIXED</title>
+<title>BENX CHAT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
   margin:0;
-  font-family:Arial, sans-serif;
-  background: radial-gradient(circle at top, #1e90ff55, #000 70%);
+  font-family: Arial, sans-serif;
+  background: linear-gradient(180deg,#0a1a2f,#000);
   color:#fff;
 }
-.container{
-  min-height:100vh;
+
+/* LOGIN */
+#login{
+  height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
 }
-.box{
+.login-box{
   width:320px;
   padding:25px;
-  background:rgba(0,0,0,0.6);
+  background:#0e1625;
   border-radius:12px;
-  box-shadow:0 0 20px #1e90ff66;
 }
 input,button{
   width:100%;
@@ -32,62 +33,110 @@ input,button{
   border:none;
   border-radius:8px;
 }
-input{
-  background:#111;
-  color:#fff;
+input{background:#111;color:#fff}
+button{background:#1e90ff;font-weight:bold}
+
+/* CHAT */
+#chat{
+  display:none;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
 }
-button{
+.header{
+  padding:15px;
+  background:#0e1625;
+  text-align:center;
+  font-weight:bold;
+}
+.messages{
+  flex:1;
+  padding:15px;
+  overflow-y:auto;
+}
+.msg{
   background:#1e90ff;
   color:#000;
-  font-weight:bold;
-  cursor:pointer;
+  padding:8px 12px;
+  border-radius:10px;
+  margin-bottom:8px;
+  max-width:70%;
 }
-#home{
-  display:none;
-  text-align:center;
+.input-box{
+  display:flex;
+  padding:10px;
+  background:#0e1625;
+}
+.input-box input{
+  flex:1;
+  margin:0;
+}
+.input-box button{
+  width:80px;
+  margin-left:8px;
+}
+.logout{
+  background:#ff4d4d;
+  margin:10px;
 }
 </style>
 </head>
 <body>
 
-<div class="container">
-  <!-- LOGIN -->
-  <div class="box" id="login">
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-box">
     <h2>BENX CHAT</h2>
     <input id="name" placeholder="Enter name">
-    <input id="pass" type="password" placeholder="Password">
     <button onclick="login()">Login</button>
   </div>
+</div>
 
-  <!-- HOME -->
-  <div class="box" id="home">
-    <h2>Welcome</h2>
-    <p id="user"></p>
-    <button onclick="logout()">Logout</button>
+<!-- CHAT -->
+<div id="chat">
+  <div class="header">
+    Public Chat Room
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="messages" id="messages"></div>
+
+  <div class="input-box">
+    <input id="msg" placeholder="Type message...">
+    <button onclick="sendMsg()">Send</button>
   </div>
 </div>
 
 <script>
+let messages = [];
+
 function login(){
-  const n = document.getElementById("name").value;
-  const p = document.getElementById("pass").value;
-
-  if(!n || !p){
-    alert("Fill all fields");
-    return;
-  }
-
-  localStorage.setItem("benx_user", n);
-  showHome();
+  const name = document.getElementById("name").value;
+  if(!name) return alert("Enter name");
+  localStorage.setItem("benx_user", name);
+  showChat();
 }
 
-function showHome(){
-  const u = localStorage.getItem("benx_user");
-  if(u){
-    document.getElementById("login").style.display="none";
-    document.getElementById("home").style.display="block";
-    document.getElementById("user").innerText = "Hello " + u;
-  }
+function showChat(){
+  document.getElementById("login").style.display="none";
+  document.getElementById("chat").style.display="flex";
+}
+
+function sendMsg(){
+  const text = msg.value;
+  if(!text) return;
+  messages.push(text);
+  msg.value="";
+  render();
+}
+
+function render(){
+  messagesDiv = document.getElementById("messages");
+  messagesDiv.innerHTML="";
+  messages.forEach(m=>{
+    messagesDiv.innerHTML += `<div class="msg">${m}</div>`;
+  });
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
 function logout(){
@@ -95,7 +144,11 @@ function logout(){
   location.reload();
 }
 
-window.onload = showHome;
+window.onload = ()=>{
+  if(localStorage.getItem("benx_user")){
+    showChat();
+  }
+}
 </script>
 
 </body>
