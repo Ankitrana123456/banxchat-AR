@@ -1,78 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ban X Chat – Login</title>
+<meta charset="UTF-8">
+<title>BENX CHAT – FIXED</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-  <style>
-    body{
-      margin:0;
-      background:#0a84ff;
-      font-family:"Poppins",sans-serif;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      height:100vh;
-      color:white;
-    }
-    .box{
-      background:white;
-      color:#111;
-      padding:30px;
-      border-radius:14px;
-      width:330px;
-      text-align:center;
-      box-shadow:0 15px 40px rgba(0,0,0,0.2);
-    }
-    .logo{
-      font-size:32px;
-      font-weight:700;
-      background:linear-gradient(135deg,#00d4ff,#0066ff);
-      -webkit-background-clip:text;
-      color:transparent;
-    }
-    button{
-      margin-top:20px;
-      padding:12px 15px;
-      width:100%;
-      border:0;
-      border-radius:8px;
-      font-size:16px;
-      font-weight:600;
-      cursor:pointer;
-      background:#0a84ff;
-      color:#fff;
-    }
-  </style>
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background: radial-gradient(circle at top, #1e90ff55, #000 70%);
+  color:#fff;
+}
+.container{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.box{
+  width:320px;
+  padding:25px;
+  background:rgba(0,0,0,0.6);
+  border-radius:12px;
+  box-shadow:0 0 20px #1e90ff66;
+}
+input,button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+}
+input{
+  background:#111;
+  color:#fff;
+}
+button{
+  background:#1e90ff;
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+}
+#home{
+  display:none;
+  text-align:center;
+}
+</style>
 </head>
-
 <body>
 
-<div class="box">
-  <div class="logo">BAN X CHAT</div>
-  <p style="margin-top:4px;color:#666">Start chatting instantly</p>
+<div class="container">
+  <!-- LOGIN -->
+  <div class="box" id="login">
+    <h2>BENX CHAT</h2>
+    <input id="name" placeholder="Enter name">
+    <input id="pass" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
 
-  <button id="googleBtn">Continue with Google</button>
+  <!-- HOME -->
+  <div class="box" id="home">
+    <h2>Welcome</h2>
+    <p id="user"></p>
+    <button onclick="logout()">Logout</button>
+  </div>
 </div>
 
-<!-- Firebase Config (modular) -->
-<script type="module">
-  import { auth, provider } from "./firebase-config.js";
-  import { signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+<script>
+function login(){
+  const n = document.getElementById("name").value;
+  const p = document.getElementById("pass").value;
 
-  document.getElementById("googleBtn").addEventListener("click", async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      console.log("Login successful:", result.user);
-      location.href = "home.html";
-    } catch (error) {
-      console.error(error);
-      alert(error.message);
-    }
-  });
+  if(!n || !p){
+    alert("Fill all fields");
+    return;
+  }
+
+  localStorage.setItem("benx_user", n);
+  showHome();
+}
+
+function showHome(){
+  const u = localStorage.getItem("benx_user");
+  if(u){
+    document.getElementById("login").style.display="none";
+    document.getElementById("home").style.display="block";
+    document.getElementById("user").innerText = "Hello " + u;
+  }
+}
+
+function logout(){
+  localStorage.removeItem("benx_user");
+  location.reload();
+}
+
+window.onload = showHome;
 </script>
 
 </body>
